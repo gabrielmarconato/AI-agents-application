@@ -1,53 +1,4 @@
-from crewai import Agent, Task, Crew, Process
-from langchain_openai import ChatOpenAI
-import os
-
-os.environ["OPENAI_API_KEY"] = "NA"
-
-phi3 = ChatOpenAI(
-    model = "phi3",
-    base_url = "http://localhost:11434/v1")
-
-summarizer = Agent(role = "Summarizer",
-                      goal = """Summarize content of {gemini} to be used in a slides presentation, mantaining most of the information as possible.
-                      """,
-                      backstory = """You are a professional slide summarizer which receives a already summarized text, that is not optimized for slide presentations.\n
-                      you should optimize it for that""",
-                      allow_delegation = False,
-                      verbose = True,
-                      llm = phi3)
-
-
-translator = Agent(role = "Translator",
-                      goal = """Translate the content provided by summarizer keeping the overall structure of the text the same""",
-                      backstory = """You are a professional translator""",
-                      allow_delegation = False,
-                      verbose = True,
-                      llm = phi3)
-
-
-summarize = Task (description=(
-        "1. Develop a summary and introduction content for a slide presentation "
-            "and noteworthy information aboutGreenHouse in IoT.\n"
-        "2. Make sure you highlight "
-            "their interests and pain points.\n"
-        "3. Include a section for discution of the IoT arcquitetures used in this field"),
-             agent = summarizer,
-             expected_output="A summarized version of {gemini} which should be in markdown format")
-
-translate = Task (description=("1. Translate the english content to Brazillian Portuguese.\n"
-                               "2. Make sure the structure in which the content is organized is exacly the same\n"
-                               "3. Don't add any new information to the content."),
-             agent = translator,
-             expected_output="A translated version of summarizer output, which should also be in markdown format")
-
-crew = Crew(
-            agents=[summarizer, translator],
-            tasks=[summarize, translate],
-            verbose=1
-        )
-
-gemini_output = """# Applications of IoT for Optimized Greenhouse Environment and Resources Management
+# Applications of IoT for Optimized Greenhouse Environment and Resources Management
 
 ## 1. Introduction
 
@@ -210,11 +161,3 @@ While initial investments in IoT infrastructure can be high, the long-term benef
 ## 5. Conclusion
 
 IoT technologies offer significant potential for optimizing greenhouse environments and resource management in agriculture. Overcoming challenges related to standardization, cost, and infrastructure availability will be crucial for unlocking the full benefits of Agriculture 4.0 and achieving sustainable and efficient food production systems.
-"""
-
-result = crew.kickoff(inputs={"gemini": gemini_output})
-
-print(result)
-
-with open("output.md", "w") as f:
-    f.write(result)

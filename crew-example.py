@@ -26,7 +26,7 @@ translator = Agent(role = "Translator",
                       llm = phi3)
 
 
-summarize = Task (description=(
+summarize = Task(description=(
         "1. Develop a summary and introduction content for a slide presentation "
             "and noteworthy information aboutGreenHouse in IoT.\n"
         "2. Make sure you highlight "
@@ -35,7 +35,7 @@ summarize = Task (description=(
              agent = summarizer,
              expected_output="A summarized version of {gemini} which should be in markdown format")
 
-translate = Task (description=("1. Translate the english content to Brazillian Portuguese.\n"
+translate = Task(description=("1. Translate the english content to Brazillian Portuguese.\n"
                                "2. Make sure the structure in which the content is organized is exacly the same\n"
                                "3. Don't add any new information to the content."),
              agent = translator,

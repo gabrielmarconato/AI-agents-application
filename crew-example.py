@@ -4,8 +4,8 @@ import os
 
 os.environ["OPENAI_API_KEY"] = "NA"
 
-phi3 = ChatOpenAI(
-    model = "phi3",
+llama3_q3_K_L = ChatOpenAI(
+    model = "llama3:8b-instruct-q3_K_L",
     base_url = "http://localhost:11434/v1")
 
 summarizer = Agent(role = "Summarizer",
@@ -15,7 +15,7 @@ summarizer = Agent(role = "Summarizer",
                       you should optimize it for that""",
                       allow_delegation = False,
                       verbose = True,
-                      llm = phi3)
+                      llm = llama3_q3_K_L)
 
 
 translator = Agent(role = "Translator",
@@ -23,7 +23,7 @@ translator = Agent(role = "Translator",
                       backstory = """You are a professional translator""",
                       allow_delegation = False,
                       verbose = True,
-                      llm = phi3)
+                      llm = llama3_q3_K_L)
 
 
 summarize = Task(description=(
@@ -33,7 +33,7 @@ summarize = Task(description=(
             "their interests and pain points.\n"
         "3. Include a section for discution of the IoT arcquitetures used in this field"),
              agent = summarizer,
-             expected_output="A summarized version of {gemini} which should be in markdown format")
+             expected_output="A summarized version of the content received, which should be in markdown format")
 
 translate = Task(description=("1. Translate the english content to Brazillian Portuguese.\n"
                                "2. Make sure the structure in which the content is organized is exacly the same\n"
